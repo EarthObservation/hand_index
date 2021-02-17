@@ -1,4 +1,5 @@
 import time
+from tqdm import tqdm
 
 from shapely.geometry import mapping
 import numpy as np
@@ -40,6 +41,7 @@ def r2t(pth_raster, pth_shp, dir_out, suffix):
     out_name = basename(pth_shp)[:-4] + suffix
 
     # Read polygons to data frame
+    print("Reading shapefile...")
     t = time.time()
     tdf = gpd.read_file(pth_shp)
     t = time.time() - t
@@ -50,23 +52,21 @@ def r2t(pth_raster, pth_shp, dir_out, suffix):
     # tmp_read = pickle.load(open("df.p", "rb"))
 
     # Reformat geometry to GeoJSON format (append a new column)
-    t = time.time()
-    tdf["geom"] = tdf.geometry.apply(lambda g: [mapping(g)])
-    t = time.time() - t
-    print(f"Change geometry format to geojson: {t} seconds")
+    tqdm.pandas(desc="geometry -> GeoJSON")
+    tdf["geom"] = tdf.geometry.progress_apply(lambda g: [mapping(g)])
 
     # # Uncomment for processing of a subset (useful for debugging)
     # tdf = tdf[tdf.REGIJA == 1].copy()
 
     # Extract rasters, and calculate mean & std (each stored to a new column)
-    t = time.time()
     src = rasterio.open(pth_raster)
-    tdf["hand_rst"] = tdf.geom.apply(lambda g: ms_rio(g, src))
-    tdf["hand_mean"] = tdf.hand_rst.apply(lambda g: np.nanmean(g))
-    tdf["hand_std"] = tdf.hand_rst.apply(lambda g: np.nanstd(g))
+    tqdm.pandas(desc="Extracting arrays")
+    tdf["hand_rst"] = tdf.geom.progress_apply(lambda g: ms_rio(g, src))
+    tqdm.pandas(desc="Mean")
+    tdf["hand_mean"] = tdf.hand_rst.progress_apply(lambda g: np.nanmean(g))
+    tqdm.pandas(desc="Std")
+    tdf["hand_std"] = tdf.hand_rst.progress_apply(lambda g: np.nanstd(g))
     src.close()
-    t = time.time() - t
-    print(f"Mean and std of polygon: {t} seconds")
 
     # Save shapefile (drop GeoJSON and raster columns)
     print("Saving SHP...")
