@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/hand_index.iml" filepath="$PROJECT_DIR$/.idea/hand_index.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/rst2tbl_stacked.iml" filepath="$PROJECT_DIR$/.idea/rst2tbl_stacked.iml" />
     </modules>
   </component>
 </project>

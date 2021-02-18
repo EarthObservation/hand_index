@@ -1,7 +1,7 @@
 """
-IDEA 1: Map the mask function on the list containing opened rasterio data sets.
-SLower: 12 min for region 4 using 3 rasters
-Benchmark 1:38 for 1 raster in region 4
+IDEA 5: Just use for loop to reed all rasters.
+SLower/faster:
+Benchmark: 1:38 for 1 raster in region 4
 """
 import time
 from tqdm import tqdm
@@ -39,12 +39,16 @@ def r2t(pth_raster, pth_shp, dir_out, suffix):
         polygon has to be in the GeoJSON format. The crop attribute sets values
         not covered by polygon to nan. All_touched is used to prevent empty rasters
         for very thin polygons."""
-        def msk(arr, gm):
-            one_r, _ = mask(arr, gm, crop=True, all_touched=True)
-            return one_r
+        # # Option with for loop (6 min 21 seconds for 3 rasters)
+        # arrays = []
+        # for arr in raster:
+        #     one_r, _ = mask(arr, geom, crop=True, all_touched=True)
+        #     arrays.append(one_r)
+        # stack = np.concatenate(arrays, axis=0)
 
-        arrays = map(lambda x: msk(x, geom), raster)
-        stack = np.concatenate(list(arrays), axis=0)
+        # Option with list comprehension (5 min 55 seconds for 3 rasters)
+        stack = [mask(arr, geom, crop=True, all_touched=True)[0] for arr in raster]
+        stack = np.concatenate(stack, axis=0)
 
         return stack
 
