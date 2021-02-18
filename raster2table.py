@@ -51,12 +51,12 @@ def r2t(pth_raster, pth_shp, dir_out, suffix):
     # pickle.dump(tdf, "df.p", "wb"))
     # tmp_read = pickle.load(open("df.p", "rb"))
 
+    # # Uncomment for processing of a subset (useful for debugging)
+    # tdf = tdf[tdf.REGIJA == 4].copy()
+
     # Reformat geometry to GeoJSON format (append a new column)
     tqdm.pandas(desc="geometry -> GeoJSON")
     tdf["geom"] = tdf.geometry.progress_apply(lambda g: [mapping(g)])
-
-    # # Uncomment for processing of a subset (useful for debugging)
-    # tdf = tdf[tdf.REGIJA == 1].copy()
 
     # Extract rasters, and calculate mean & std (each stored to a new column)
     src = rasterio.open(pth_raster)
@@ -87,12 +87,13 @@ if __name__ == "__main__":
     # SET PATHS
     # ---------
     # Input raster
-    geotiff = "c:\\Users\\ncoz\\ARRS_susa\\fill_tif_fill\\dem_slo_03_HAND_fill_nan.tif"
+    geotiff = "C:\\Users\\ncoz\\AppData\\Roaming\\JetBrains\\PyCharmCE2020.3\\scratches\\stack.tif"
+    # geotiff = "c:\\Users\\ncoz\\ARRS_susa\\fill_tif_fill\\dem_slo_03_HAND_fill_nan.tif"
     # Input shape file
     shapefile = "c:\\Users\\ncoz\\ARRS_susa\\poline\\ZV2017_d96tm.shp"
     # Output folder and suffix to be added to SHP and CSV files
-    output_loc = "c:\\Users\\ncoz\\ARRS_susa\\poline"
-    suff = "_hand"
+    output_loc = "c:\\Users\\ncoz\\ARRS_susa"
+    suff = "_test_stacked_test0"
 
     result = r2t(geotiff, shapefile, output_loc, suff)
     print(result)
