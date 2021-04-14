@@ -53,14 +53,16 @@ if __name__ == "__main__":
     #     "c:\\Users\\ncoz\\ARRS_susa\\dem_slo_13_HAND_final.tif"
     # ]
 
-    d_index = "EVI2"
-    print((d_index))
+    d_index = "SAVI"
+    print(d_index)
 
-    path = "p:\\ARRS Susa\\podatki\\Sentinel-2_atm_10m_D96_2017_Slovenia"
+    # path = "p:\\ARRS Susa\\podatki\\Sentinel-2_atm_10m_D96_2017_Slovenia"
+    path = "c:\\Users\\ncoz\\ARRS_susa\\ms_stacked"
     file = f"*{d_index}_Cmask.tif"
     glob_keyword = join(path, file)
 
-    out_file = f"C:\\susa\\ZV2017_{d_index}_Cmask.tif"
+    # out_file = f"C:\\susa\\ZV2017_{d_index}_Cmask.tif"
+    out_file = "c:\\Users\\ncoz\\ARRS_susa\\ms_stacked\\stacked.tif"
 
     out = stack_gtif(glob_keyword, out_file)
     print(out)
